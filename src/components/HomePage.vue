@@ -76,7 +76,7 @@ export default {
         price: 0,
         moneypaid: 0,
       };
-    }
+    },
   }
 }
 </script>

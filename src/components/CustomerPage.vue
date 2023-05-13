@@ -4,7 +4,7 @@
     <h2>Müşteri Kayıtları</h2>
     <input type="text" v-model="searchQuery" placeholder="Arama...">
     <ul>
-      <li v-for="(customer) in customersFiltered" :key="customer.id">
+      <li v-for="(customer) in customers" :key="customer.id">
         <div>
           <p><span>İsim soyisim:</span> {{ customer.namesurname }}</p>
           <p><span>Telefon:</span> {{ customer.phone }}</p>
@@ -30,23 +30,25 @@ export default {
     }
   },
   computed: {
-    customersFiltered() {
-      console.log(this.customers);
-      if (this.customers.length === 0) {
-        return [];
-      } else if (this.searchQuery === "") {
-        return this.customers;
-      } else {
-        return this.customers.filter((el) =>
-          el.namesurname.toLowerCase().includes(this.searchQuery.toLowerCase().trim())
-        );
-      }
-    }
   },
   mounted() {
     axios.get("http://localhost:3000/customers")
       .then(response => this.customers = response.data.reverse());
   },
+  watch: {
+  searchQuery: {
+    handler: function (val) {
+      this.customers = this.customers.filter((el) => {
+        return el.namesurname.toLowerCase().includes(val.toLowerCase().trim()) ||
+               el.phone.toLowerCase().includes(val.toLowerCase().trim()) ||
+               el.adress.toLowerCase().includes(val.toLowerCase().trim());
+      });
+    },
+    deep: true
+  }
+},
+
+
   methods: {
     deleteCustomer(id) {
       console.log("id: ",id);
